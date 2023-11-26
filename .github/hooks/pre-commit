@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Stash all changes in the working directory so we test only committed changes
+git stash -q --keep-index
+
+# Run tests
+npm test
+TESTS_EXIT_CODE=$?
+
+# Run linter
+npm run lint
+LINT_EXIT_CODE=$?
+
+# Unstash changes in the working directory
+git stash pop -q
+
+git config --bool core.allownonascii false
+
+# Return the exit code of the tests and linter; if either fails, prevent the commit
+[ $TESTS_EXIT_CODE -ne 0 ] || [ $LINT_EXIT_CODE -ne 0 ] && exit 1
+
+exit 0
