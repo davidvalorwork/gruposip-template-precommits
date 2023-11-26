@@ -1,0 +1,1 @@
+# gruposip-template-precommits
